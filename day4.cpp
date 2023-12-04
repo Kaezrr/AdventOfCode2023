@@ -3,7 +3,6 @@
 #include <string>
 #include <numeric>
 #include <sstream>
-#include <cmath>
 #include <unordered_set>
 
 using ll = long long int;
@@ -12,7 +11,7 @@ int main() {
 	std::ifstream input{ "C:/Users/invik/Downloads/input.txt" };
 	std::vector<int> score_per_card{};
 	std::string str;
-	double answer{ 0 };
+	int answer{ 0 };
 
 	while (std::getline(input, str)) {
 		std::unordered_set<int> win, mine;
