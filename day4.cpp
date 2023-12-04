@@ -5,8 +5,6 @@
 #include <sstream>
 #include <unordered_set>
 
-using ll = long long int;
-
 int main() {
 	std::ifstream input{ "C:/Users/invik/Downloads/input.txt" };
 	std::vector<int> score_per_card{};
