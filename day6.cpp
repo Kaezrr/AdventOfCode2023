@@ -3,9 +3,9 @@
 #include <sstream>
 #include <vector>
 #include <string>
-#include <algorithm>
+#include <cmath>
 
-using ull = unsigned long long int;
+using ll = long long int;
 
 int main() {
 	std::ios::sync_with_stdio(0);
@@ -25,38 +25,29 @@ int main() {
 	std::stringstream s2{ line.substr(line.find(':') + 1) };
 	while (!s2.eof()) { int n; s2 >> n; records.push_back(n); }
 
-	int p1{ 1 };
+	ll p1{ 1 };
 	for (int i{ 0 }; i < times.size(); ++i) {
-		int ways{ 0 };
-		for (int t{ 1 }; t <= times[i]; ++t) {
-			if (times[i] * t - (t * t) <= records[i]) continue;
-			++ways;
-		}
-		p1 *= ways;
+		ll a = static_cast<ll>(0.5 * (-times[i] + std::sqrt(times[i] * times[i] - 4 * records[i])));
+		ll b = static_cast<ll>(0.5 * (-times[i] - std::sqrt(times[i] * times[i] - 4 * records[i])));
+		p1 *= a - b;
 	}
 
 	std::string time_string{};
 	std::string record_string{};
 
-	for (const auto& t : times) {
-		time_string += std::to_string(t);
+	for (int i{ 0 }; i < times.size(); ++i) {
+		time_string += std::to_string(times[i]);
+		record_string += std::to_string(records[i]);
 	}
 	
-	for (const auto& r : records) {
-		record_string += std::to_string(r);
-	}
+	ll parsed_time{ std::stoll(time_string) };
+	ll parsed_record{ std::stoll(record_string) };
 
-	ull parsed_time{ std::stoull(time_string) };
-	ull parsed_record{ std::stoull(record_string) };
-
-	int p2{ 0 };
-	for (ull t{ 0 }; t <= parsed_time; ++t) {
-		if (parsed_time * t - (t * t) <= parsed_record) continue;
-		++p2;
-	}
+	ll a = static_cast<ll>(0.5 * (-parsed_time + std::sqrt(parsed_time * parsed_time - 4 * parsed_record)));
+	ll b = static_cast<ll>(0.5 * (-parsed_time - std::sqrt(parsed_time * parsed_time - 4 * parsed_record)));
 
 	std::cout << "Part 1: " << p1 << '\n';
-	std::cout << "Part 2: " << p2 << '\n';
+	std::cout << "Part 2: " << a - b << '\n';
 
 	return 0;
 }
