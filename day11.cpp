@@ -2,11 +2,13 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <unordered_set>
+#include <cmath>
+
+using ll = long long int;
 
 static std::vector<std::vector<char>> galaxy{};
-int findDistance(const std::pair<int, int>& a, const std::pair<int, int>& b) {
-	return std::abs(a.first - b.first) + std::abs(a.second - b.second);
+static ll findDistance(const std::pair<int, int>& a, const std::pair<int, int>& b) {
+	return b.first - a.first + std::abs(a.second - b.second);
 }
 
 int main() {
@@ -15,42 +17,49 @@ int main() {
 
 	while (std::getline(file, line)) {
 		galaxy.emplace_back(line.begin(), line.end());
-		if (!line.contains('#'))
-			galaxy.emplace_back(line.begin(), line.end());
 	}
-	std::vector<int> col;
-	for (int i{ 0 }; i < galaxy[0].size(); ++i) {
-		bool filled{ false };
-		for (const auto& v : galaxy) {
-			if (v[i] == '.') continue;
-			filled = true;
+
+	std::vector<int> empty_rows;
+	std::vector<int> empty_cols;
+	int rc{ 0 }; 
+	int cc{ 0 };
+	for (const auto& v : galaxy) {
+		bool empty = true;
+		for (const auto& c : v) {
+			if (c == '.') continue;
+			empty = false;
 			break;
 		}
-		if (filled) continue;
-		col.push_back(i);
+		if (empty) rc += 999999;
+		empty_rows.push_back(rc);
 	}
-	for (int i{ 0 }; i < col.size(); ++i) {
-		for (auto& v : galaxy) {
-			v.insert(std::next(v.begin(), col[i] + i), '.');
+
+	for (int i{ 0 }; i < galaxy[0].size(); ++i) {
+		bool empty = true;
+		for (const auto& v : galaxy) {
+			if (v[i] == '.') continue;
+			empty = false;
+			break;
 		}
+		if (empty) cc += 999999;
+		empty_cols.push_back(cc);
 	}
 
 	std::vector<std::pair<int, int>> coords;
 	for (int i{ 0 }; i < galaxy.size(); ++i) {
 		for (int j{ 0 }; j < galaxy[0].size(); ++j) {
 			if (galaxy[i][j] == '.') continue;
-			galaxy[i][j] = static_cast<char>('1' + coords.size());
-			coords.emplace_back(i, j);
+			coords.emplace_back(i + empty_rows[i], j + empty_cols[j]);
 		}
 	}
 	
-	int distance{ 0 };
+	ll distance{ 0 };
 	for (int i { 0 }; i < coords.size(); ++i) {
 		for (int j{ i + 1 }; j < coords.size(); ++j) {
 			distance += findDistance(coords[i], coords[j]);
 		}
 	}
+	std::cout << "Answer: " << distance << '\n';
 
-	std::cout << "Part 1: " << distance << '\n';
 	return 0;
 }
